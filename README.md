@@ -1,128 +1,55 @@
 # CS 124 Section A, Project 3
 
-## Exploring binary search trees, AVL trees, and splay trees
+## CS 124/Spring 2023 Project 3 Johnna Schulz
 
-For this project, you will:
-* store integers in a binary search tree, an AVL tree, and a splay tree,
-* store object of your custom time in a binary search tree, and AVL tree, and a splay tree,
-* search for objects in these trees and record the depth of the tree that is reached for each search, and
-* analyze your results and compare the performance of different trees.
+Observations
 
-For example, you will search for objects in different trees and record how many objects you had to visit to complete the search in each case. Your analysis will include comparison of results across different types of tree.
+When instantiating a binary search tree using ordered insertion, I noticed that the depths of each value increased by 1 each time. The root node is 1 and starts at value 0, and then the rest of the tree is built off of that until value 100, which has depth 99. You can see the visualization of this from the graph:
 
-## Setup
-You'll probably want to start with code from project 01 (with whatever modifications were suggested). If you haven't already done so, you will need to overload `<`, `>`, `<=`, `=>`, and `==` operators so that they work with objects of your custom class. Why? So we can compare and order objects. (For tips on overloading these operators, see the original "Kepler" model, circulated with the starter code for project 1.)
+![chart1](https://user-images.githubusercontent.com/97975268/223608568-a8c4af7e-2eaf-4b26-a20c-039863e02627.png)
+When creating one using random insertion, I noticed that the depths of each value also seem completely random, and consecutive values had depths that did not seem close at all. The root node ended up being 96, and the depth of the tree was 12. You can see the random sorting from the graph:
 
-Since you have one unique key field for each record in your dataset, use this when comparing objects (and overloading operators). In this way, you'll ensure that all objects created from your data set can be inserted into trees of each type.
+![chart2](https://user-images.githubusercontent.com/97975268/223608756-87076b32-66cd-479b-9dc8-2d9a3f289b61.png)
 
-## Experiments 
+When creating one using my custom data type, space missions, I noticed that the depths of each consecutive value increased by 1 each time, which is because my missions were ordered. The root node was 0 and the tree had depth 4323.
 
-### Binary Search Tree
-Copy `BinarySearchTree.h` to your project and modify the `find()` methods so that a search of the tree stores the depth of the last node visited. To do this, pass an integer variable by reference into the find methods and modify it inside the methods. Note that the depth of the root node is 0. Make sure that you record the depth of the last node visited even if the search fails, so that you know how far you had to search before failing to find the target value.
+![chart3](https://user-images.githubusercontent.com/97975268/223608846-e5626900-2514-44a8-9ef8-dc6ef79800a6.png)
 
-Instantiate a binary search tree (of integer values) and insert the numbers 1 through 100 in that order, then search for all numbers 1 through 100 and record their depths in a file. What do you notice? What is the value of the root node? What is the depth of the tree?
-
-Now instantiate a new BST and insert the numbers 1 through 100 in random order. You may use https://www.random.org to generate a shuffled list of numbers 1 through 100, or you can shuffle a vector of numbers 1 through 100 using C++’s shuffle method. Now search for each number from 1 through 100, and record the depth of each find operation to a file. What do you notice? What is the value of the root node? What is the depth of the tree?
-
-Now instantiate a BST to hold objects of your custom data type. Read your objects into a vector (as you have done in earlier projects) and then insert them into the BST. Make sure you have at least 1000 objects in your BST. Now search for each of your objects and record its depth in a file. What do you notice? What is the value of the root node? What is the depth of your tree?
-
-Prepare three separate plots, one for each of these tests: BST of ints with ordered insertion, BST of ints with shuffled insertion, and BST of your custom data type. Make sure title each plot and to label both axes on each plot. Here’s an example:
-
-![example](plots/example.png)
-
-HINT: Saving your output to three separate files will make your life easier. Each file should have integer value (or your custom object’s unique ID) and depth separated by a comma for each row. If you use a .csv extension when naming your output files, spreadsheet software will automatically recognize these as CSVs and will split the data into columns automatically when reading. This will make it easier to produce your plots. If you do this for all three tree types, you will have nine output files.
-
-### AVL Trees
-Copy `AvlTree.h` to your project and modify the `find()` methods so that a search of the tree stores the depth of the last node visited (as above). These changes should be pretty much identical to the changes you made to `BinarySearchTree.h`. Perform the same experiments as you did for binary search trees, except now, all your trees are AVL trees. Record and analyze your results as above. Generate plots for your results as above.
-
-How do these depths compare with your results for binary search trees? Why?
-
-### Splay Trees
-Copy `SplayTree.h` to your project and modify the `find()` methods so that a search of the tree stores the depth of the last node visited (as above). These changes should be very similar to the changes you made to `BinarySearchTree.h` and `AvlTree.h`. Notice that the `SplayTree` class takes a boolean argument in its constructor. For this portion of the assignment set this to false. Perform the same experiments as you did for binary search trees and AVL trees, except now, all your trees are splay trees. Record and analyze your results as above. Generate plots for your results as above.
-
-How do these depths compare with your results for binary search trees and AVL trees? Why?
-
-Now perform an experiment where you populate a splay tree with integers from 1 to 100, and then search for integers in random order. But in this case, search for each integer five separate times in succession, and record the depth in each case. What do you notice? Why do these depths make sense? (You do not need to generate a plot from these data.)
-
-Finally, we will perform a test to see what difference, if any, splaying on add makes. As noted above, the `SplayTree` constructor takes a boolean argument. If this is set to true, then the splay tree will splay on add, moving the newly-added node up to the root. If this is set to false, it will add the new node, but will not splay.
-
-You are supplied a trace file in CSV format, `splay_trace.csv`, and some starter code, `splayTests2.cpp`. The trace file is a list of add and find operations and values. This is intended to simulate "real-world" application of a splay tree. The C++ code, loads and parses data from this file. You are to modify `splayTests2.cpp` so that if the trace file specifies "add" you add the indicated value to the splay tree, and if the trace file specifies "find" you are to find the indicated value. Your modifications should measure correctly the depth of the tree that is reached on each find operation, and keep a cumulative sum of these depths. If your modifications are correct, the function `calcAverageDepth()` should return the average depth reached on find operations over the entire trace file.
-
-Compile and run this program and observe the results. Is there a difference when we splay on add as opposed to when we don’t? Describe the result, and account for the difference observed if any, or explain why there is no difference, if not.
-
-## Report
-
-You must write a report about your project.
-
-* Answer all the questions above in your report.
-* Compare and contrast the results of your experiments making reference to your plots and explain the differences based on what you know about the structure and behavior of the trees.
-* Determine and justify the complexity of searching each of the different the trees---BST, AVL, and splay---based on the results. Use Big-O notation where appropriate.
-
-You can overwrite `README.md` with your report, or, if you prefer to leave `README.md`, you can write your report in a file named `REPORT.md`.
-
-## What to submit
-* You must submit your source files (including the three modified header files), your data file(s), the trace file, your output files, and your report.
-* The minimum set of files needed to compile and run all of your experiments and generate all your output files should be supplied.
-• If you are using CLion or cmake, please include your `CMakeLists.txt`.
-• Your report should be in Markdown format---you can simply replace this `README.md` file with your report.
-• You should include your data file so we can run your program! If your data file is large, you may zip it.
-
-## Preparing plots
-
-Do not use C++ to produce plots. You can use whatever spreadsheet application or graphical programming language you prefer. You can use whatever type of plot is most readable to you (_e.g._, scatter plot, histogram, _etc._).
-  * Your plots should have clear labels for both x and y axes.
-  * Save your graph files in a separate "plots" folder.
-  * You do not need to plot the depths of the integer type trees or the splay tree that finds each object five times in a row, but you can if you feel it helps you analyze the data.
-  * You can see how to include an image in your report by inspecting the Markdown source for the image above.
-  * Compare and contrast the plots and explain the differences based on what you know about the structure and behavior of the trees. Justify the time complexity of searching the trees based on the results.
-
-## Code
-
-  * The following files are supplied for you: `AvlTree.h`, `BinarySearchTree.h`, `SplayTree.h` and `splayTests2.cpp`. You are to use these in your project and include the modified versions of these files with your submission. There are also some demos `randomNumber.cpp`, `shuffleVector.cpp`, `timing.cpp` and `writeToFile.cpp`. These provide working examples of generating a random number, shuffling a vector, timing an operation, and writing to a file, respectively.
-  * Follow the course style guide.
-  * Use C++ 17 Standard.
-  * We will compile using CLion, or if that fails we may try compiling from the command line. However, it is in your best interest to stick to the basics and make sure your code complies and runs without any fuss.
-  
-**Note: Any code that was not authored by yourself or the instructor must be cited in your report. This includes the use of concepts not taught in lecture.**
-
-## Extra Credit
-Write a separate program (_e.g._, like `timing.cpp`) that calculates eight values, when working with your custom objects:
-
-  1. average time to add one object to a BST
-  2. average time to add one object to an AVL tree,
-  3. average time to add one object to a splay tree (with splay on add set to false),
-  4. average time to add one object to a splay tree (with splay on add set to true),
-  5. average time to find one object in a BST
-  6. average time to find one object in an AVL tree,
-  7. average time to find one object in a splay tree (with splay on add set to false), and 
-  8. average time to find one object in a splay tree (with splay on add set to true).
-
-To do this, read your data from disk into a vector of objects, and then for 1000 iterations 
-
-  1. shuffle the vector,
-  2. perform timing experiments for adding objects,
-  3. shuffle the vector, and
-  4. perform timing experiments for finding objects. 
-  5. Finally, calculate averages and display the results.
-  
-Include a separate section in your written report where you discuss your findings. Are the average values you found in accordance with your expectations? Explain why or why not? How is the experiment representative of "real-world" behavior? In what way is the experiment not representative of "real-world" behavior? How would you change the experiment to improve the comparison between these different trees?
-
-Starter code for timing events in C++ is in the template repository. See: `timing.cpp`.
+Because of the way a binary search tree is set up, the worst case search time has complexity O(n), best case is O(log n). When I insert my data in order, the complexity is O(n).
 
 
-## Grading
 
-| points   |                                                                                                                                                                                                                                                 |
-|----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| 5        | You submitted all files in the correct formats. You did not submit any files that were not requested.                                                                                                                                           |
-| 10       | Program compiles and runs.                                                                                                                                                                                                                      |
-| 10       | Your code is readable, follows good code style and standards for this class, uses consistent naming, and has comments where appropriate. Your name must appear in a comment or docblock atop each source code file authored or modified by you. |
-| 15       | The results of your BST experiments are correct and you respond to all related prompts in your report.                                                                                                                                          |
-| 15       | The results of your AVL tree experiments are correct and you respond to all related prompts in your report.                                                                                                                                     |
-| 25       | The results of your splay tree experiments are correct and you respond to all related prompts in your report.                                                                                                                                   |
-| 20       | Your report is well-written and properly cites all sources (where appropriate)                                                                                                                                                                  |
-| 100      | TOTAL                                                                                                                                                                                                                                           |
-|          |                                                                                                                                                                                                                                                 |
-| up to 10 | Extra credit                                                                                                                                                                                                                                    |
-|          |                                                                                                                                                                                                                                                 |
+When instantiating an AVL tree using ordered insertion, I noticed that the depths of each value seemed fairly random, but that there were a lot of values that had depth 6. The root node was 64, and the depth of the whole tree was also 6. The graph shows the depths of each value, and you can see that the depths are much smaller and more balanced than the binary search tree:
 
+![chart4](https://user-images.githubusercontent.com/97975268/223609022-27ff468a-835a-4266-8903-71dff8d51c9d.png)
+
+When instantiating one using random insertion, I noticed that the values also seemed fairly random, but different than the ordered tree. This time, the root node was 45, but the depth of the tree remained 6.
+
+![chart5](https://user-images.githubusercontent.com/97975268/223609130-17413279-249f-4cce-b49c-7b186fab6ce4.png)
+
+When instantiating one using space missions, I noticed that the tree had to be a lot deeper to fit all of the values. The root node was 2048.
+These depths are much different than the binary search trees, because the binary search tree simply adds each value to the end of the “list,” while an AVL tree finds a spot for the value somewhere that makes the tree less deep and more symmetrical. You can see the visualization of this here, where the depths are fairly balanced:
+
+![chart6](https://user-images.githubusercontent.com/97975268/223609303-0d744724-2683-44c0-8c3b-7d9e285015fd.png)
+
+Because AVL trees are more balanced than binary search trees, the time complexity is typically O(log n).
+
+
+
+When instantiating a splay tree using ordered insertion, I noticed that when you use find() to access the depths in order, each depth besides the first one is recorded as 1. This is because when you access each value, it is moved up to the root, so when you access the value right after it, then its depth would be 1. So, for this method I searched for each value in backwards order, starting at 100. These depths are much different than the ones from the other types of trees, because of the recently accessed values being moved to the root. The graph shows how accessing each value starting backwards moves the values around - the depth of 100 is originally at 99, but then as each value gets accessed, they are moved closer to the root.
+
+![chart7](https://user-images.githubusercontent.com/97975268/223609566-25c3f4be-c787-4e02-8e05-6369f2fa9018.png)
+
+For the random insertion, I noticed that although the values were random, many of the values had depth 1. This is most likely because of the rearrangement of the values when they’re accessed, which is much different than the other two tree types, which do not move values around like that. The root node changed each time, but the highest depth recorded from the tree was 8, although it was probably originally much deeper than that.
+
+![chart8](https://user-images.githubusercontent.com/97975268/223609690-8ba11055-6f4b-4ef6-8279-67782fad48f9.png)
+
+For the space mission insertion, I inserted the values in order, so the depths of each value when they’re recorded are all 1. The root node was recorded as value 0, and the depth of the tree originally started as 4323, but likely changed with each access. You can see how the depth stays the same for all of them in the graph:
+
+![chart9](https://user-images.githubusercontent.com/97975268/223609830-e8ea5395-50fb-459b-a3e2-e950a76e422d.png)
+
+Because splay trees are more efficient in the way they store data than binary search trees, their time complexity is also usually O(log n).
+
+For the splay test where you access each value 5 times, I noticed that the first time you accessed a value, the depth was a non-zero value, but for every access after the depth was 0. This is because it was moved to the root node, so accessing it many times in a row will just keep the depth at 0.
+
+For the splaying on add test, there was a difference in the resulting values - when I didn’t splay on add, the average depth was 6.288, but when I did splay on add, the depth was 5.579. There is a difference because when you add a value without splaying, it just adds the value to the bottom of the tree, which makes the depth of the tree very large and so the average depth of any random value will be deeper. When you splay on add, you put the value at the root of the tree which causes the tree to rebalance and overall be “Neater.” When the tree rebalances it takes away some of the depth, so the depth of an average value splayed on add is shallower.
